@@ -183,18 +183,22 @@ def plot_mutation(vorher, nacher, blocks, height):
 
 def plot_fitness(fitness_values):
     fig, ax = plt.subplots()
-    ax.plot(fitness_values)
+    ax.plot(fitness_values, marker="x", lw = 3, markersize=10)
     ax.set_xlabel('Generation', fontsize=20)
     ax.set_ylabel('Fitness', fontsize=20)
     ax.set_xlim(0, None)
     ax.set_ylim(0,1)
     plt.tick_params(axis='both', which='major', labelsize=18)
 
-def print_population(population, blocks):
+def print_population(population, blocks, col_prefix="Individuum", row_names=None):
     #print population in a table
-    cols = [f"Block {i}" for i in range(len(blocks))]
-    rows = [f"Individuum {i}" for i in range(len(population))]
-    df = pd.DataFrame(population, columns=cols, index=rows)
+
+    col_names = [f"Block {i}" for i in range(len(blocks))]
+    if row_names is None:
+        row_names = [f"{col_prefix} {i}" for i in range(len(population))]
+
+
+    df = pd.DataFrame(population, columns=col_names, index=row_names)
     styled_df = df.style.apply(lambda x: ['background: lightgray' if i % 2 == 0 else 'background: white' for i in range(len(x))], axis=1)
     # Define CSS styles for borders
     styles = [
