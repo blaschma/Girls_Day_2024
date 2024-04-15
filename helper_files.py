@@ -1,13 +1,17 @@
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import numpy as np
+from IPython.display import display, HTML
+import pandas as pd
 
+
+cmap = cm.tab20b
 
 def plot_population(population, blocks, max_length, fitness=None, sort=False, with_fitness=False):
     fig, ax = plt.subplots(figsize=(10,7))
 
     height = 7.5
-    cmap = cm.Paired
+
     y = 0
     xmax = 0
 
@@ -44,28 +48,27 @@ def plot_population(population, blocks, max_length, fitness=None, sort=False, wi
     ax.axis('off')
 
 def plot_blocks(blocks):
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(10,3))
     x = y = 0
-    height = 0.5
-    cmap = cm.Paired
+    height = 0.25
     for i, block in enumerate(blocks):
-        rect = plt.Rectangle((x, y), block, height, alpha=0.5, color=cmap(i))
-        ax.text(x + block / 2, 0.25, f'{i}', horizontalalignment='center', verticalalignment='center', fontsize=30,
+        rect = plt.Rectangle((x, y), block*4, height, alpha=0.5, color=cmap(i))
+        ax.text(x + block*2, height/2, f'{i}', horizontalalignment='center', verticalalignment='center', fontsize=20,
                 color='black')
-        x += block + 10
+        x += block + 60
         ax.add_patch(rect)
 
     plt.xlim(0, x)
+    plt.ylim(0, height)
     ax.axis('off')
     plt.show()
 
 def plot_cross_over(parents, children, crossover_point, blocks, max_length):
     fig, ax = plt.subplots(figsize=(10,7))
     height = 7.5
-    cmap = cm.Paired
     y = 0
     xmax = 0
-    text_shift = 40
+    text_shift = 60
     x_spacing = 10
     x_0 = 0
 
@@ -75,7 +78,7 @@ def plot_cross_over(parents, children, crossover_point, blocks, max_length):
     x = x_0
     color_dict = {0: "r", 1: "b"}
     for j, child in enumerate(children):
-        ax.text(x , y + height/2, f'Child {j+1}:', horizontalalignment='left', verticalalignment='center',fontsize=20, color=color_dict[j])
+        ax.text(x , y + height/2, f'Kind {j+1}:', horizontalalignment='left', verticalalignment='center',fontsize=20, color=color_dict[j])
         x += text_shift
         x_old = x
         for i, chosen in enumerate(child):
@@ -103,7 +106,7 @@ def plot_cross_over(parents, children, crossover_point, blocks, max_length):
     y += height*3
     name_dict = {0: "a", 1: "b"}
     for j, parent in enumerate(parents):
-        ax.text(x , y + height/2, f'Parent {name_dict[j]}:', horizontalalignment='left', verticalalignment='center',fontsize=20, color='black')
+        ax.text(x , y + height/2, f'Elternteil {name_dict[j]}:', horizontalalignment='left', verticalalignment='center',fontsize=20, color='black')
         x += text_shift
         x_old = x
         for i, chosen in enumerate(parent):
@@ -140,7 +143,6 @@ def plot_cross_over(parents, children, crossover_point, blocks, max_length):
 
 def plot_mutation(vorher, nacher, blocks, height):
 
-    cmap = cm.Paired
     fig, ax = plt.subplots(figsize=(10,7))
     x=0
     y=0
@@ -187,6 +189,20 @@ def plot_fitness(fitness_values):
     ax.set_xlim(0, None)
     ax.set_ylim(0,1)
     plt.tick_params(axis='both', which='major', labelsize=18)
+
+def print_population(population, blocks):
+    #print population in a table
+    cols = [f"Block {i}" for i in range(len(blocks))]
+    rows = [f"Individuum {i}" for i in range(len(population))]
+    df = pd.DataFrame(population, columns=cols, index=rows)
+    styled_df = df.style.apply(lambda x: ['background: lightgray' if i % 2 == 0 else 'background: white' for i in range(len(x))], axis=1)
+    # Define CSS styles for borders
+    styles = [
+    dict(selector="th", props=[("border", "1px solid black")]),
+    dict(selector="td", props=[("border", "1px solid black")]),
+    ]
+    styled_df.set_table_styles(styles)
+    display(HTML(styled_df.render()))
 
 if __name__ == '__main__':
     pass
