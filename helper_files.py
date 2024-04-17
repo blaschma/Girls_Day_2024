@@ -40,8 +40,8 @@ def plot_population(population, blocks, max_length, fitness=None, sort=False, wi
                 ax.add_patch(rect)
         y += height*2
 
-    plt.axvline(x_0, ls='--', color='black')
-    plt.axvline(x_0+max_length, ls='--', color='black')
+    plt.axvline(x_0, ls='--', color='red')
+    plt.axvline(x_0+max_length, ls='--', color='red')
 
     plt.xlim(0, np.max([max_length+x_0, xmax]))
     plt.ylim(0, y)
@@ -68,8 +68,8 @@ def plot_cross_over(parents, children, crossover_point, blocks, max_length):
     height = 7.5
     y = 0
     xmax = 0
-    text_shift = 60
-    x_spacing = 10
+    text_shift = 75
+    x_spacing = 20
     x_0 = 0
 
     arrow_points = []
@@ -137,7 +137,7 @@ def plot_cross_over(parents, children, crossover_point, blocks, max_length):
 
 
     plt.xlim(0, np.max([max_length+x_0, xmax]))
-    plt.ylim(-10, y )
+    plt.ylim(-5, y )
     ax.axis('off')
 
 
@@ -173,7 +173,6 @@ def plot_mutation(vorher, nacher, blocks, height):
             if x > xmax:
                 xmax = x
             ax.add_patch(rect)
-    y -= height*2
 
     plt.xlim(0, xmax)
     plt.ylim(y, height)
@@ -192,13 +191,18 @@ def plot_fitness(fitness_values):
 
 def print_population(population, blocks, col_prefix="Individuum", row_names=None):
     #print population in a table
-
+    population = population[::-1]
     col_names = [f"Block {i}" for i in range(len(blocks))]
+    index = np.arange(0, len(population))
     if row_names is None:
         row_names = [f"{col_prefix} {i}" for i in range(len(population))]
+        #row_names = sorted(row_names, reverse=False)
+
 
 
     df = pd.DataFrame(population, columns=col_names, index=row_names)
+    # Sort DataFrame by row names
+    #df = df.reindex(row_names)
     styled_df = df.style.apply(lambda x: ['background: lightgray' if i % 2 == 0 else 'background: white' for i in range(len(x))], axis=1)
     # Define CSS styles for borders
     styles = [
@@ -207,6 +211,38 @@ def print_population(population, blocks, col_prefix="Individuum", row_names=None
     ]
     styled_df.set_table_styles(styles)
     display(HTML(styled_df.render()))
+
+def create_nice_example(population, fitness, max_width, blocks):
+    """
+    This function creates a nice example for the population. It is obviously not the best solution, but a simple one.
+    :param population:
+    :return:
+    """
+    def calc_fitness(individuum):
+        length = 0
+        for i, chosen in enumerate(individuum):
+            if chosen == 1:
+                length += blocks[i]
+        if length > max_width:
+            return 0
+        else:
+            return length / max_width
+
+    for i, individuum in enumerate(population):
+        n = 3
+        if fitness[i] > 0.65:
+            #set n entries of individuum from 1 to 0. make sure that entries are 1 in the beginning
+            for j in range(0, n):
+                if individuum[j] == 1:
+                    individuum[j] = 0
+            fitness[i] = calc_fitness(individuum)
+
+def correct_blocks(blocks, max_width):
+    sum = np.sum(blocks)
+    while sum < max_width:
+        blocks = [width*1.1 for width in blocks]
+        sum = np.sum(blocks)
+    return blocks
 
 if __name__ == '__main__':
     pass
