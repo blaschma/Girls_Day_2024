@@ -210,7 +210,8 @@ def print_population(population, blocks, col_prefix="Individuum", row_names=None
     dict(selector="td", props=[("border", "1px solid black")]),
     ]
     styled_df.set_table_styles(styles)
-    display(HTML(styled_df.render()))
+    html_table = styled_df.to_html()
+    display(HTML(html_table))
 
 def create_nice_example(population, fitness, max_width, blocks):
     """
