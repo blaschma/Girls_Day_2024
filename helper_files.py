@@ -149,7 +149,7 @@ def plot_mutation(vorher, nacher, blocks, height):
     xmax = 0
     text_shift = 60
 
-    ax.text(x , y + height/2, f'Vor Mutatation:', horizontalalignment='left', verticalalignment='center',fontsize=20, color='black')
+    ax.text(x , y + height/2, f'Vor Mutation:', horizontalalignment='left', verticalalignment='center',fontsize=20, color='black')
     x += text_shift
     for i, chosen in enumerate(vorher):
         if chosen == 1:
@@ -163,7 +163,7 @@ def plot_mutation(vorher, nacher, blocks, height):
 
     x=0
     y -= height*2
-    ax.text(x , y + height/2, f'Nach Mutatation:', horizontalalignment='left', verticalalignment='center',fontsize=20, color='black')
+    ax.text(x , y + height/2, f'Nach Mutation:', horizontalalignment='left', verticalalignment='center',fontsize=20, color='black')
     x += text_shift
     for i, chosen in enumerate(nacher):
         if chosen == 1:
